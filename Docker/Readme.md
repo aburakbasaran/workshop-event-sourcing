@@ -26,6 +26,7 @@ Note that Docker Compose might _not_ included to your version of Docker, so you 
 
 *Important:* carefully read this section and ensure that everything works on your machine before the workshop. 
 
+*Important:* highly recommended check the tutorial before starting to eventStore [EventStore tutorial](https://www.katacoda.com/alperhankendi/scenarios/eventstore-workshop)
 
 ### Using Docker Compose
 
