@@ -116,3 +116,7 @@ chapters/04-snapshot-before/Reviews.Service.WebApi/bin
 chapters/04-snapshot-before/Reviews.Service.WebApi/obj
 chapters/04-snapshot-before/Reviews.Service.Contract/bin
 chapters/04-snapshot-before/Reviews.Domain/bin
+src/Reviews.Service.QueryApi/bin
+tests/Reviews.Domain.Test/bin
+tests/Reviews.Service.WebApi.IntegrationTests/bin
+tests/Reviews.Service.WebApi.IntegrationTests/obj

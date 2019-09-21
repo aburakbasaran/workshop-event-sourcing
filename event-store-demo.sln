@@ -30,6 +30,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reviews.Core.EventStore.Tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reviews.Core.Projections.RavenDb.Test", "tests\Reviews.Core.Projections.RavenDb.Test\Reviews.Core.Projections.RavenDb.Test.csproj", "{BB1661B4-1F67-43D7-95E4-0E12377B7463}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reviews.Service.WebApi.IntegrationTests", "tests\Reviews.Service.WebApi.IntegrationTests\Reviews.Service.WebApi.IntegrationTests.csproj", "{CBD2A4C2-FD88-4494-B50E-8684B2263433}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -80,6 +82,10 @@ Global
 		{BB1661B4-1F67-43D7-95E4-0E12377B7463}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB1661B4-1F67-43D7-95E4-0E12377B7463}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BB1661B4-1F67-43D7-95E4-0E12377B7463}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBD2A4C2-FD88-4494-B50E-8684B2263433}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBD2A4C2-FD88-4494-B50E-8684B2263433}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBD2A4C2-FD88-4494-B50E-8684B2263433}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBD2A4C2-FD88-4494-B50E-8684B2263433}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{DD5ED2BA-570B-4CB4-B11C-F26C844A1349} = {8F4F710B-85EC-4889-916A-592E8BBFB985}
@@ -93,5 +99,6 @@ Global
 		{B7FEDF72-C209-446D-8346-50E1256C8C11} = {E7E8B543-8BFE-4550-BF0D-1C100AEE6218}
 		{046FFF1B-413E-40E9-A79E-0DCF94E8745B} = {E7E8B543-8BFE-4550-BF0D-1C100AEE6218}
 		{BB1661B4-1F67-43D7-95E4-0E12377B7463} = {E7E8B543-8BFE-4550-BF0D-1C100AEE6218}
+		{CBD2A4C2-FD88-4494-B50E-8684B2263433} = {E7E8B543-8BFE-4550-BF0D-1C100AEE6218}
 	EndGlobalSection
 EndGlobal

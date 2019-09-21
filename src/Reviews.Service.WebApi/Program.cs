@@ -20,7 +20,10 @@ namespace Reviews.Service.WebApi
             {
                 var configuration = BuildConfiguration(args);
                 await Console.Error.WriteLineAsync("Configuration built successfully.");
-                await CreateWebHostBuilder(configuration,args).Build().RunAsync();
+                await CreateWebHostBuilder(args)
+                    .UseConfiguration(configuration)
+                    .ConfigureServices(services => services.AddSingleton(configuration))
+                    .Build().RunAsync();
 
                 return 0;
             }
@@ -31,10 +34,8 @@ namespace Reviews.Service.WebApi
             }
         }
 
-        private static IWebHostBuilder CreateWebHostBuilder(IConfiguration configuration,string[] args) =>
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseConfiguration(configuration)
-                .ConfigureServices(services => services.AddSingleton(configuration))
                 .UseStartup<Startup>();
         
         private static IConfiguration BuildConfiguration(string[] args)
