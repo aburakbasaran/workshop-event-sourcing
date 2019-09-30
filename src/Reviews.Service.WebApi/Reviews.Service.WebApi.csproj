@@ -23,7 +23,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Reviews.Core.EventStore\Reviews.Core.EventStore.csproj" />
     <ProjectReference Include="..\Reviews.Core.Projections.RavenDb\Reviews.Core.Projections.RavenDb.csproj" />
-    <ProjectReference Include="..\Reviews.Core.Snapshots.Providers\Reviews.Core.Snapshots.Providers.csproj" />
     <ProjectReference Include="..\Reviews.Core\Reviews.Core.csproj" />
     <ProjectReference Include="..\Reviews.Domain\Reviews.Domain.csproj" />
     <ProjectReference Include="..\Reviews.Service.Contract\Reviews.Service.Contract.csproj" />

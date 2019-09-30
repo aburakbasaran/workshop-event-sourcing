@@ -38,8 +38,6 @@ namespace Reviews.Core.EventStore
              if(aggregate==null)
                  throw new ArgumentException($"Aggregate null or empty :",nameof(aggregate));
 
-             
-             
             var changes = aggregate.GetChanges().Select(c => new EventData(
                     Guid.NewGuid(), 
                     EventTypeMapper.GetTypeName(c.GetType()),
