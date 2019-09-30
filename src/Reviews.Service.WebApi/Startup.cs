@@ -63,6 +63,8 @@ namespace Reviews.Service.WebApi
             //Building Event store components
             BuildEventStore(services);
             
+            EventMappings.MapEventTypes();
+            
             services
                 .AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -103,27 +105,12 @@ namespace Reviews.Service.WebApi
             
             await eventStoreConnection.ConnectAsync();
             
-            
-            var serializer = new JsonNetSerializer();
-
-            var eventMapper = new EventTypeMapper()
-                .Map<Domain.Events.V1.ReviewCreated>("reviewCreated")
-                .Map<Domain.Events.V1.CaptionAndContentChanged>("reviewUpdated")
-                .Map<Domain.Events.V1.ReviewPublished>("reviewPublished")
-                .Map<Domain.Events.V1.ReviewApproved>("reviewApproved")
-                .Map<Domain.ReviewSnapshot>("reviewSnapshot");
-
-
             var aggregateStore = new GesAggrigateStore(
                 eventStoreConnection, 
-                serializer, 
-                eventMapper,
                 (type, id) => $"{type.Name}-{id}", 
                 null);
 
             var gesSnapshotStore = new GesSnapshotStore(eventStoreConnection,
-                serializer,
-                eventMapper,
                 (type, id) => $"{type.Name}-{id}",
                 null);
 
@@ -143,8 +130,6 @@ namespace Reviews.Service.WebApi
             await ProjectionManager.With
                 .Connection(eventStoreConnection)
                 .CheckpointStore(new RavenDbChecklpointStore(GetSession))
-                .Serializer(serializer)
-                .TypeMapper(eventMapper)
                 .SetProjections( new Projection[]
                 {
                     new ActiveReviews(GetSession),

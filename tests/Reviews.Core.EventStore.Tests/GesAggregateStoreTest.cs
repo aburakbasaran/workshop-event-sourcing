@@ -18,7 +18,7 @@ namespace Reviews.Core.EventStore.Tests
             aggregate.Apple(AutoFixture.Create<Domain.Events.V1.ReviewCreated>());
             aggregate.Apple(AutoFixture.Create<Domain.Events.V1.ReviewApproved>());
 
-            var sut = new GesAggrigateStore(Connection, Serializer, EventTypeMapper, (a, b) => $"{a}-{b}", null);
+            var sut = new GesAggrigateStore(Connection, (a, b) => $"{a}-{b}", null);
 
             var result = await sut.Save(aggregate);
             
@@ -36,7 +36,7 @@ namespace Reviews.Core.EventStore.Tests
             aggregate.Apple(AutoFixture.Build<Domain.Events.V1.ReviewApproved>().With(e=>e.Id,AggregateId).Create());
 
            
-            var sut = new GesAggrigateStore(Connection, Serializer, EventTypeMapper, (a, b) => $"{a}-{b}", null);
+            var sut = new GesAggrigateStore(Connection, (a, b) => $"{a}-{b}", null);
             
             var saveResult = await sut.Save(aggregate);
             

@@ -18,22 +18,16 @@ namespace Reviews.Core.EventStore
         
         
         private readonly IEventStoreConnection eventStoreConnection;
-        private readonly ISerializer serializer;
-        private readonly EventTypeMapper eventTypeMapper;
         private readonly GetStreamName getStreamName;
         
         private readonly UserCredentials userCredentials;
         
         
         public GesAggrigateStore(IEventStoreConnection eventStoreConnection, 
-                                ISerializer serializer,
-                                EventTypeMapper eventTypeMapper,
                                 GetStreamName getStreamName,
                                 UserCredentials userCredentials=null)
         {
             this.eventStoreConnection = eventStoreConnection ?? throw new ArgumentNullException(nameof(eventStoreConnection));;
-            this.serializer = serializer ?? throw new ArgumentException(nameof(serializer));
-            this.eventTypeMapper = eventTypeMapper ?? throw new ArgumentException(nameof(eventTypeMapper));
             this.getStreamName = getStreamName ?? throw new ArgumentException(nameof(getStreamName));
 
             this.userCredentials = userCredentials;
@@ -44,11 +38,13 @@ namespace Reviews.Core.EventStore
              if(aggregate==null)
                  throw new ArgumentException($"Aggregate null or empty :",nameof(aggregate));
 
+             
+             
             var changes = aggregate.GetChanges().Select(c => new EventData(
                     Guid.NewGuid(), 
-                    eventTypeMapper.GetEventName(c.GetType()),
-                    serializer.IsJsonSerializer,
-                    serializer.Serialize(c),
+                    EventTypeMapper.GetTypeName(c.GetType()),
+                    EventSerializer.IsJsonSerializer,// serializer.IsJsonSerializer,
+                    EventSerializer.Serialize(c),
                 null));
 
             if (!changes.Any())
@@ -91,7 +87,11 @@ namespace Reviews.Core.EventStore
                 var chunk =  await eventStoreConnection.ReadStreamEventsForwardAsync(stream, nextPageStart,MaximumReadSize, false, userCredentials);
                 
                 //Build your aggregate
-                aggregate.Load(chunk.Events.Select(e=> serializer.Deserialize(e.Event.Data,eventTypeMapper.GetEventType(e.Event.EventType))).ToArray());
+                aggregate.Load(chunk.Events.Select(e=> 
+                    
+                    e.Deserialze()
+                    
+                ).ToArray());
 
                 //check is there any other events ?
                 nextPageStart = !chunk.IsEndOfStream ? chunk.NextEventNumber : -1;
@@ -130,7 +130,9 @@ namespace Reviews.Core.EventStore
 
             } while (!currentSlice.IsEndOfStream);
             
-            return streamEvents.Select(e=> serializer.Deserialize(e.Event.Data,eventTypeMapper.GetEventType(e.Event.EventType))).ToArray();
+            return streamEvents.Select(e=> 
+                e.Deserialze()
+                ).ToArray();
         }
     }
 }

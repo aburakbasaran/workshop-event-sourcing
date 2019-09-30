@@ -10,8 +10,6 @@ namespace Reviews.Core.EventStore
     {
         private IEventStoreConnection eventStoreConnection;
         private ICheckpointStore checkpointStore;
-        private ISerializer serializer;
-        private EventTypeMapper eventTypeMapper;
         private Projection[] projections;
         private UserCredentials userCredentials=null;
         
@@ -30,18 +28,6 @@ namespace Reviews.Core.EventStore
             this.checkpointStore = checkpointStore;
             return this;
         }
-        public ProjectionManagerBuilder Serializer(ISerializer serializer)
-        {
-            this.serializer = serializer;
-            return this;
-        }
-
-        public ProjectionManagerBuilder TypeMapper(EventTypeMapper typeMapper)
-        {
-            this.eventTypeMapper = typeMapper;
-            return this;
-        }
-
         public ProjectionManagerBuilder MaxLiveQueueSize(int maxLiveQueueSize)
         {
             this.maxLiveQueueSize = maxLiveQueueSize;
@@ -77,8 +63,6 @@ namespace Reviews.Core.EventStore
             new ProjectionManager(
                 eventStoreConnection,
                 checkpointStore,
-                serializer,
-                eventTypeMapper,
                 projections,
                 maxLiveQueueSize,
                 readBatchSize,
@@ -97,8 +81,6 @@ namespace Reviews.Core.EventStore
             new ProjectionManagerWithPersistantSubscription(
                 eventStoreConnection,
                 checkpointStore,
-                serializer,
-                eventTypeMapper,
                 projections,
                 maxLiveQueueSize,
                 readBatchSize,

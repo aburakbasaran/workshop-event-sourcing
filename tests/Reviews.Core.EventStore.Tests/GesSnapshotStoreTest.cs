@@ -15,11 +15,6 @@ namespace Reviews.Core.EventStore.Tests
         public GesSnapshotStoreTest(ITestOutputHelper outputHelper):base()
         {
             this.outputHelper = outputHelper;
-
-            EventTypeMapper = new EventTypeMapper()
-                .Map<Domain.Events.V1.ReviewCreated>("reviewCreated")
-                .Map<Domain.Events.V1.ReviewApproved>("reviewApproved")
-                .Map<Domain.ReviewSnapshot>("reviewSnapshot");
         }
         
         [Fact]
@@ -30,7 +25,7 @@ namespace Reviews.Core.EventStore.Tests
             aggregate.Apple(AutoFixture.Create<Domain.Events.V1.ReviewCreated>());
             aggregate.Apple(AutoFixture.Create<Domain.Events.V1.ReviewApproved>());
             
-            var sut = new GesSnapshotStore(Connection, Serializer, EventTypeMapper, (a, b) => $"{a}-{b}", null);
+            var sut = new GesSnapshotStore(Connection, (a, b) => $"{a}-{b}", null);
             
             //When
             var result =await  sut.SaveSnapshotAsync(aggregate.TakeSnapshot());
@@ -56,7 +51,7 @@ namespace Reviews.Core.EventStore.Tests
             aggregate.Apple(AutoFixture.Build<Domain.Events.V1.ReviewPublished>().With(e=>e.Id,AggregateId).Create());
             aggregate.Apple(AutoFixture.Build<Domain.Events.V1.ReviewApproved>().With(e=>e.Id,AggregateId).Create());
             
-            var sut = new GesSnapshotStore(Connection, Serializer, EventTypeMapper, (a, b) => $"{a}-{b}", null);
+            var sut = new GesSnapshotStore(Connection, (a, b) => $"{a}-{b}", null);
             var snap = aggregate.TakeSnapshot();
             await  sut.SaveSnapshotAsync(snap); 
             

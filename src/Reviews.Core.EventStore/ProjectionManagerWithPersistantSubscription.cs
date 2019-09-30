@@ -15,8 +15,6 @@ namespace Reviews.Core.EventStore
         
         private readonly IEventStoreConnection eventStoreConnection;
         private readonly ICheckpointStore checkpointStore;
-        private readonly ISerializer serializer;
-        private readonly EventTypeMapper eventTypeMapper;
         private readonly Projection[] projections;
         private readonly UserCredentials userCredentials;
 
@@ -30,8 +28,6 @@ namespace Reviews.Core.EventStore
 
         internal ProjectionManagerWithPersistantSubscription(IEventStoreConnection eventStoreConnection, 
             ICheckpointStore checkpointStore,
-            ISerializer serializer,
-            EventTypeMapper eventTypeMapper,
             Projection[] projections,
             int maxLiveQueueSize,
             int readBatchSize,
@@ -41,8 +37,6 @@ namespace Reviews.Core.EventStore
         {
             this.eventStoreConnection = eventStoreConnection ?? throw new ArgumentNullException(nameof(eventStoreConnection));
             this.checkpointStore = checkpointStore ?? throw new ArgumentNullException(nameof(checkpointStore));
-            this.serializer = serializer ?? throw new ArgumentNullException(nameof(serializer));
-            this.eventTypeMapper = eventTypeMapper ?? throw new ArgumentException(nameof(eventTypeMapper));
             this.projections = projections;
             this.userCredentials = userCredentials;
 

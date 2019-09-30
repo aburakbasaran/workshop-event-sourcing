@@ -10,22 +10,17 @@ namespace Reviews.Core.EventStore
     public class GesSnapshotStore : ISnapshotStore
     {
         private readonly IEventStoreConnection eventStoreConnection;
-        private readonly ISerializer serializer;
-        private readonly EventTypeMapper eventTypeMapper;
+      
         private readonly GetStreamName getStreamName;
         
         private readonly UserCredentials userCredentials;
         
         
         public GesSnapshotStore(IEventStoreConnection eventStoreConnection, 
-            ISerializer serializer,
-            EventTypeMapper eventTypeMapper,
             GetStreamName getStreamName,
             UserCredentials userCredentials=null)
         {
             this.eventStoreConnection = eventStoreConnection ?? throw new ArgumentNullException(nameof(eventStoreConnection));;
-            this.serializer = serializer ?? throw new ArgumentException(nameof(serializer));
-            this.eventTypeMapper = eventTypeMapper ?? throw new ArgumentException(nameof(eventTypeMapper));
             this.getStreamName = getStreamName ?? throw new ArgumentException(nameof(getStreamName));
 
             this.userCredentials = userCredentials;
@@ -37,9 +32,9 @@ namespace Reviews.Core.EventStore
 
             var snapshotyEvent =  new EventData(
                 snapshot.Id, 
-                eventTypeMapper.GetEventName(snapshot.GetType()),
-                serializer.IsJsonSerializer,
-                serializer.Serialize(snapshot),
+                EventTypeMapper.GetTypeName(snapshot.GetType()),
+                EventSerializer.IsJsonSerializer,
+                EventSerializer.Serialize(snapshot),
                 null);
 
             var result = await eventStoreConnection.AppendToStreamAsync(stream,ExpectedVersion.Any, snapshotyEvent);
@@ -60,10 +55,11 @@ namespace Reviews.Core.EventStore
             {
                 var result = streamEvents.Events.FirstOrDefault();
 
-                var t = eventTypeMapper.GetEventType(result.Event.EventType);
-                Console.WriteLine("Typeof"+t.FullName);
+                //var t = EventTypeMapper.GetType(result.Event.EventType);
+                //Console.WriteLine("Typeof"+t.FullName);
                 Console.WriteLine("Typeof"+ Encoding.ASCII.GetString(result.OriginalEvent.Data));
-                snapshot = (Snapshot) serializer.Deserialize(result.OriginalEvent.Data,t);
+                //snapshot = (Snapshot) serializer.Deserialize(result.OriginalEvent.Data,t);
+                snapshot = (Snapshot)result.Deserialze();
                 Console.WriteLine("build snapshot:" + snapshot.AggregateId);
                 return snapshot;
             }

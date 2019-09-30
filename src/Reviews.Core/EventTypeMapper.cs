@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection.Metadata;
 
 namespace Reviews.Core
 {
-    public class EventTypeMapper
+    public static class EventTypeMapper
     {
-        private readonly Dictionary<string,Type> typeByName     = new Dictionary<string, Type>();
-        private readonly Dictionary<Type,string> nameByTypes     = new Dictionary<Type, string>();
+        private static readonly Dictionary<string,Type> typeByName     = new Dictionary<string, Type>();
+        private static readonly Dictionary<Type,string> nameByTypes     = new Dictionary<Type, string>();
 
-        public EventTypeMapper Map(Type type, string name = null)
+        private static void Map(Type type, string name = null)
         {
             if (string.IsNullOrWhiteSpace(name))
                 name = type.FullName;
@@ -19,35 +18,31 @@ namespace Reviews.Core
 
             typeByName[name] = type;
             nameByTypes[type] = name;
-            
-            return this;
         }
 
-        public bool TryGetEventType(string name, out Type type) => typeByName.TryGetValue(name, out type);
-        public bool TryGetEventName(Type type,out string name) => nameByTypes.TryGetValue(type, out name);
-    }
+        public static void Map<T>(string name) => Map(typeof(T), name);
 
-    public static class EventTypeMapperExtentions
-    {
-        public static EventTypeMapper Map<T>(this EventTypeMapper mapper, string name) => mapper.Map(typeof(T), name);
+        private static bool TryGetEventType(string name, out Type type) => typeByName.TryGetValue(name, out type);
+        private static bool TryGetEventName(Type type,out string name) => nameByTypes.TryGetValue(type, out name);
         
-        public static Type GetEventType(this EventTypeMapper mapper, string name)
+        public static string GetTypeName(Type type)
         {
-            if (!mapper.TryGetEventType(name, out var type))
-                return null;
-                //throw new Exception($"Failed to find type mapped with '{name}'");
-
-            return type;
-        }
-
-        public static string GetEventName(this EventTypeMapper mapper, Type type)
-        {
-            if(!mapper.TryGetEventName(type,out var name))
+            if (!TryGetEventName(type, out var name))
                 throw new Exception($"Failed to find name mapped with '{type}'");
 
             return name;
         }
+
+        public static Type GetType(string name)
+        {
+            if (!TryGetEventType(name, out var type))
+                throw new Exception($"Failed to find type mapped with '{name}'");
+
+            return type;
+        }
     }
+
+   
     
     public class InvalidExpectedStreamVersionException : Exception
     {
