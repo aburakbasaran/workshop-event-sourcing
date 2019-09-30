@@ -53,8 +53,8 @@ namespace Reviews.Core.EventStore
                 return default;
             }
 
-            var stream = getStreamName(typeof(T), aggregate.Id.ToString());
-            
+            //var stream = getStreamName(typeof(T), aggregate.Id.ToString());
+            var stream = GetStreamName<T>(aggregate);
             WriteResult result;
             try
             {
@@ -77,7 +77,8 @@ namespace Reviews.Core.EventStore
             if(string.IsNullOrWhiteSpace(aggregateId))
                 throw new ArgumentException("Value cannot be null or whitrespace",nameof(aggregateId));
 
-            var stream = getStreamName(typeof(T), aggregateId);
+            //var stream = getStreamName(typeof(T), aggregateId);
+            var stream = GetStreamName<T>(aggregateId);
             var aggregate = new T();
             
             var nextPageStart = 0L;
@@ -103,12 +104,13 @@ namespace Reviews.Core.EventStore
         }
 
         public async Task<object[]> GetEvents<T>(string aggregateId, long start, int count)
+            where T : Aggregate
         {
             if(string.IsNullOrWhiteSpace(aggregateId))
                 throw new ArgumentException("Value cannot be null or whitrespace",nameof(aggregateId));
 
-            var stream = getStreamName(typeof(T), aggregateId);
-            
+            //var stream = getStreamName(typeof(T), aggregateId);
+            var stream = GetStreamName<T>(aggregateId);
             var streamEvents = new List<ResolvedEvent>();
             StreamEventsSlice currentSlice;
             long nextSliceStart = start < 0 ? StreamPosition.Start : start;
@@ -134,5 +136,11 @@ namespace Reviews.Core.EventStore
                 e.Deserialze()
                 ).ToArray();
         }
+        
+        private static string GetStreamName<T>(string aggregateId) where T : Aggregate
+            => $"{typeof(T).Name}-{aggregateId}";
+
+        private static string GetStreamName<T>(T aggregate)where T : Aggregate
+            => $"{typeof(T).Name}-{aggregate.Id.ToString()}";
     }
 }

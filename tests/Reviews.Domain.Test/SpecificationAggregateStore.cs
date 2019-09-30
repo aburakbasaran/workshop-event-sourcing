@@ -47,7 +47,7 @@ namespace Reviews.Domain.Test
         public Task<T> Load<T>(string aggregateId, CancellationToken cancellationToken = default) where T : Aggregate,new()
             => Task.FromResult((T)aggregate);
 
-        public Task<object[]> GetEvents<T>(string aggregateId, long start, int count)
+        public Task<object[]> GetEvents<T>(string aggregateId, long start, int count) where T : Aggregate
             => Task.FromResult(RaisedEvents);
     }
 }
