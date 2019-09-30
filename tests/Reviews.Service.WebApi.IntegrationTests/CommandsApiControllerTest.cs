@@ -27,7 +27,7 @@ namespace Reviews.Service.WebApi.IntegrationTests
         
        
      
-        [Theory]
+        [Fact]
         public async Task CreateReview_Should_Return_OkResult()
         {
             //Arrange
@@ -50,7 +50,7 @@ namespace Reviews.Service.WebApi.IntegrationTests
             
         }
         
-        [Theory]
+        [Fact]
         public async Task PublishReview_Should_Return_OkResult()
         {
             //Arrange
