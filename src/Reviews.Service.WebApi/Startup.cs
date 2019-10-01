@@ -1,5 +1,4 @@
 using System;
-using System.Reflection;
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using Microsoft.AspNetCore.Builder;
@@ -7,11 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Raven.Client.Documents;
-using Raven.Client.Documents.Indexes;
 using Raven.Client.Documents.Session;
-using Raven.Client.ServerWide;
-using Raven.Client.ServerWide.Operations;
 using Reviews.Core.EventStore;
 using Reviews.Core;
 using Reviews.Core.Projections;
@@ -115,8 +110,9 @@ namespace Reviews.Service.WebApi
             services.AddSingleton<IRepository>(repository);
             
             services.AddSingleton(new ApplicationService(repository));
-
-            IAsyncDocumentSession GetSession() => BuildRevenDb().OpenAsyncSession();
+            var documentStore = RavenDbConfiguration.Build(Configuration["RavenDb:Url"], Configuration["RavenDb:Database"]);
+            
+            IAsyncDocumentSession GetSession() => documentStore.OpenAsyncSession();
             
             await ProjectionManager.With
                 .Connection(eventStoreConnection)
@@ -127,58 +123,6 @@ namespace Reviews.Service.WebApi
                     new ReviewsByOwner(GetSession)  
                 })
                 .StartAll();
-        }
-
-        private IDocumentStore BuildRevenDb()
-        {
-            var store = new DocumentStore {
-                Urls     = new[] {Configuration["RavenDb:Url"]},
-                Database = Configuration["RavenDb:Database"]
-            };
-            
-            if (Environment.IsDevelopment()) store.OnBeforeQuery += (_, args) 
-                => args.QueryCustomization.WaitForNonStaleResults();
-
-            try 
-            {
-                store.Initialize();                
-                Console.WriteLine($"Connection to {store.Urls[0]} document store established.");
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException(
-                    $"Failed to establish connection to \"{store.Urls[0]}\" document store!" +
-                    $"Please check if https is properly configured in order to use the certificate.", ex);
-            }
-            try
-            {
-                var record = store.Maintenance.Server.Send(new GetDatabaseRecordOperation(store.Database));
-                if (record == null) 
-                {
-                    store.Maintenance.Server
-                        .Send(new CreateDatabaseOperation(new DatabaseRecord(store.Database)));
-
-                    Console.WriteLine($"{store.Database} document store database created.");
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException(
-                    $"Failed to ensure that \"{store.Database}\" document store database exists!", ex);
-            }
-            
-            try
-            {
-                IndexCreation.CreateIndexes(Assembly.GetExecutingAssembly(), store);
-                Console.WriteLine($"{store.Database} document store database indexes created or updated.");
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException($"Failed to create or update \"{store.Database}\" document store database indexes!", ex);
-            }
-            
-            return store;
-            
         }
     }
 }

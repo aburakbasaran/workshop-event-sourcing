@@ -17,11 +17,11 @@ namespace Reviews.Service.QueryApi.Modules.Reviews
 
         public QueryService(Func<IAsyncDocumentSession> session) => getSession = session;
 
-        public Task<List<ActiveReviewDocument>> GetAllActiveReviewDocuments()
+        public Task<List<ActiveReviewDocument>> GetAllActiveReviewDocuments(string user_id)
         {
             var session = getSession();
             
-            return session.Query<ActiveReviewDocument>().ToListAsync();
+            return session.Query<ActiveReviewDocument>().Where(q=>q.Owner==user_id).ToListAsync();
             
         }
 

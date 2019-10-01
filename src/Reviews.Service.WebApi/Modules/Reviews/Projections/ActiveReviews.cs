@@ -25,7 +25,7 @@ namespace Reviews.Service.WebApi.Modules.Reviews.Projections
                         {
                             Id = DocumentId(view.Id),
                             Caption = view.Caption,
-                            Content = view.Content,
+                            Content = view.Content.ToUpper(),
                             Owner =  view.OwnerId.ToString(),
                             ReviewAt = view.ReviewAt,
                             ReviewBy = view.ReviewBy.ToString()

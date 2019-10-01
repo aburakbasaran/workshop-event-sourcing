@@ -41,7 +41,7 @@ namespace Reviews.Core.EventStore
             var changes = aggregate.GetChanges().Select(c => new EventData(
                     Guid.NewGuid(), 
                     EventTypeMapper.GetTypeName(c.GetType()),
-                    EventSerializer.IsJsonSerializer,// serializer.IsJsonSerializer,
+                    EventSerializer.IsJsonSerializer,
                     EventSerializer.Serialize(c),
                 null));
 
@@ -51,8 +51,8 @@ namespace Reviews.Core.EventStore
                 return default;
             }
 
-            //var stream = getStreamName(typeof(T), aggregate.Id.ToString());
             var stream = GetStreamName<T>(aggregate);
+
             WriteResult result;
             try
             {
@@ -63,7 +63,7 @@ namespace Reviews.Core.EventStore
                 var chunk = await eventStoreConnection.ReadStreamEventsBackwardAsync(stream, -1, 1,false, userCredentials);
                 
                 throw new InvalidExpectedStreamVersionException(
-                    $"Failed to appand stream {stream} with expected version {aggregate.Version}. " +
+                    $"Failed to append stream {stream} with expected version {aggregate.Version}. " +
                     $"{(chunk.Status == SliceReadStatus.StreamNotFound ? "Stream not found!" : $"Current Version: {chunk.LastEventNumber}")}");
             }
            

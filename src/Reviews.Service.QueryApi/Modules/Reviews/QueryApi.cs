@@ -21,11 +21,11 @@ namespace Reviews.Service.QueryApi.Modules.Reviews
         [HttpGet]
         public async Task<IActionResult> Get() => new OkResult();
 
-        [Route("active/all")]
+        [Route("active/user-id")]
         [HttpGet]
-        public Task<List<ActiveReviewDocument>> GetAll()
+        public Task<List<ActiveReviewDocument>> GetAll(string user_id)
         {
-            return reviewQueryService.GetAllActiveReviewDocuments();
+            return reviewQueryService.GetAllActiveReviewDocuments(user_id);
         }
         
         [Route("active")]

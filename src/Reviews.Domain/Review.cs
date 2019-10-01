@@ -109,6 +109,7 @@ namespace Reviews.Domain
         {
             if (Version == -1)
                 throw new ReviewNotFoundException(Id);
+            
             if (CurrentStatus == Status.Draft || CurrentStatus == Status.Rejected)
             {
                 Apple(new Events.V1.ReviewPublished

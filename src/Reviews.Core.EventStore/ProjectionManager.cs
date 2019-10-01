@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
@@ -20,7 +21,6 @@ namespace Reviews.Core.EventStore
         private readonly int readBatchSize;
         private readonly bool verboseLogging;
         
-
         internal ProjectionManager(IEventStoreConnection eventStoreConnection, 
                                     ICheckpointStore checkpointStore,
                                     Projection[] projections,
@@ -50,7 +50,7 @@ namespace Reviews.Core.EventStore
             var s = projection.ToString();
             var catchUpSubscriptionSettings = new CatchUpSubscriptionSettings(maxLiveQueueSize,readBatchSize,verboseLogging,false,projection.ToString());
 
-            eventStoreConnection.SubscribeToAllFrom(lastCheckpoint, catchUpSubscriptionSettings,
+            var storeAllCatchUpSubscription=eventStoreConnection.SubscribeToAllFrom(lastCheckpoint, catchUpSubscriptionSettings,
                 eventAppeared(projection),
                 liveProcessingStarted(projection),subscriptionDropped(projection),userCredentials );
 
@@ -82,8 +82,8 @@ namespace Reviews.Core.EventStore
                 await projection.Handle(domainEvent);
                 
                 //store current checkpoint
-                checkpointStore.SetCheckpoint(e.OriginalPosition.Value, projection);
-                
+                                checkpointStore.SetCheckpoint(e.OriginalPosition.Value, projection);
+                                
                 Console.WriteLine($"{domainEvent} projected into {projection}");
 
             };
@@ -118,7 +118,7 @@ namespace Reviews.Core.EventStore
                         Console.WriteLine($"{projection} projection stopped because of a transient error ({subscriptionDropReason}). ");
                         Console.WriteLine($"Exception Detail:  {exception}");    
                         Console.WriteLine("Attempting to restart...");
-                        Task.Run(() => StartProjection(projection));
+                        await Task.Run(() => StartProjection(projection));
                         break;
                     default:
                         Console.WriteLine("Your subscription gg");

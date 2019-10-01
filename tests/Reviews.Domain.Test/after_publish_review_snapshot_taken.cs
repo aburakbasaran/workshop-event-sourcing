@@ -24,9 +24,9 @@ namespace Reviews.Domain.Test
         public void review_snapshot_is_taken()
         {
             Snapshots.Should()
-                .BeEquivalentTo(new ReviewSnapshot(Guid.Empty, ReviewId,1,NewCaption,NewContent,Status.Approved),
-                o => o.ExcludingFields()
-                    .Excluding(q=>q.Id)
+                .BeEquivalentTo(new ReviewSnapshot(Guid.Empty, ReviewId,1,
+                        NewCaption,NewContent,Status.Approved),
+                o => o.ExcludingFields().Excluding(q=>q.Id)
                 );
             
         }
