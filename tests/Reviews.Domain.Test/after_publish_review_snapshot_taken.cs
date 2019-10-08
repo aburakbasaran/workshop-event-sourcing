@@ -25,7 +25,7 @@ namespace Reviews.Domain.Test
         {
             Snapshots.Should()
                 .BeEquivalentTo(new ReviewSnapshot(Guid.Empty, ReviewId,1,
-                        NewCaption,NewContent,Status.Approved),
+                        NewCaption,NewContent,Status.Approved,ProductId),
                 o => o.ExcludingFields().Excluding(q=>q.Id)
                 );
             
@@ -36,6 +36,7 @@ namespace Reviews.Domain.Test
         private string NewContent { get; } = "This is my first review...";
         private DateTime ChangedAt { get; } = DateTime.UtcNow;
         private Guid Reviewer { get; } = Guid.NewGuid();
+        private Guid ProductId { get; } = Guid.NewGuid();
 
         public override object[] Given()
         {
@@ -45,6 +46,7 @@ namespace Reviews.Domain.Test
                 .With(e=>e.Owner,OwnerId)
                 .With(e=> e.Caption,NewCaption)
                 .With(e=> e.Content, NewContent)
+                .With(f=>f.ProductId,ProductId)
                 .Create();
             
             o[1]=AutoFixture.Build<Events.V1.ReviewPublished>()

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,12 +9,12 @@ using Reviews.Service.Contract;
 
 namespace Reviews.Service.WebApi.Modules.Reviews.Projections
 {
-    public class ReviewsByOwner : Projection
+    public class ReviewsByProducts : Projection
     {
-        private static string DocumentId(Guid id) => $"ReviewsByOwner/{id}";
+        private static string DocumentId(Guid id) => $"ReviewsByProducts/{id}";
         private readonly Func<IAsyncDocumentSession> getSession;
 
-        public ReviewsByOwner(Func<IAsyncDocumentSession> session)=> getSession = session;
+        public ReviewsByProducts(Func<IAsyncDocumentSession> session)=> getSession = session;
 
         public override async Task Handle(object e)
         {
@@ -24,12 +24,12 @@ namespace Reviews.Service.WebApi.Modules.Reviews.Projections
                 {
                     case Domain.Events.V1.ReviewCreated ev:
 
-                        var documentId = DocumentId(ev.Owner);
-                        var document = await session.LoadAsync<ReviewsByOwnerDocument>(documentId);
+                        var documentId = DocumentId(ev.ProductId);
+                        var document = await session.LoadAsync<ReviewsByProductDocument>(documentId);
 
                         if (document == null)
                         {
-                            document = new ReviewsByOwnerDocument
+                            document = new ReviewsByProductDocument
                             {
                                 Id = documentId,
                                 ListOfReviews = new List<ReviewDocument>()
@@ -40,24 +40,24 @@ namespace Reviews.Service.WebApi.Modules.Reviews.Projections
                         document.ListOfReviews.Add(new ReviewDocument
                         {
                             Id = ev.Id,
-                            Caption = ev.Caption.ToUpperInvariant(),
+                            Caption = ev.Caption,
                             Content = ev.Content,
                             Status = "Draft",
-                            ProductId = ev.ProductId.ToString(),
+                            OwnerId = ev.Owner.ToString()
                         });
                         break;
                     
                     case Domain.Events.V1.ReviewApproved ev:
 
-                        await session.Update<ReviewsByOwnerDocument>(DocumentId(ev.OwnerId), doc =>
+                        await session.Update<ReviewsByProductDocument>(DocumentId(ev.ProductId), doc =>
                         {
-                            var review = doc.ListOfReviews.First(q => q.Id == ev.Id);
+                            var review = doc.ListOfReviews.First<ReviewDocument>(q => q.Id == ev.Id);
                             review.Status = "Approved";
                         });
                         break;
                     case Domain.Events.V1.CaptionAndContentChanged ev:
 
-                        await session.Update<ReviewsByOwnerDocument>(DocumentId(ev.Owner), doc =>
+                        await session.Update<ReviewsByProductDocument>(DocumentId(ev.ProductId), doc =>
                         {
                             var review = doc.ListOfReviews.First(q => q.Id == ev.Id);
                             review.Content = ev.Content;

@@ -28,6 +28,8 @@ namespace Reviews.Contracts
                 /// creater of review
                 /// </summary>
                 public Guid Owner { get;  set; }
+
+                public Guid ProductId { get; set; }
             }
 
             public class ReviewApprove

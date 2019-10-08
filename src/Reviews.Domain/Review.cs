@@ -1,45 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Reviews.Core;
-
 
 namespace Reviews.Domain
 {
-    /// <summary>
-    /// (Create || Update ) => Draft
-    /// (Publish) => PendingApprove
-    /// (Approve) => Approved
-    /// (Reject) => Rejected
-    /// (Update if current status is approved or rejected) => PendingApprove
-    /// </summary>
-    public enum Status
-    {
-        Draft,
-        PendingApprove,
-        Approved,
-        Rejected
-    }
-
-    public class History
-    {
-        public History(DateTime reviewAt,Guid reviewer,Status status)
-        {
-            ReviewAt = reviewAt;
-            Reviewer = reviewer;
-            Action = status;
-        }
-        public Guid Reviewer { get; }
-        public DateTime ReviewAt { get; }
-        public Status Action { get; }
-    }
-    
     public class Review :Aggregate,ISnapshottable<Review>
     {
         public string Caption { get; private set; }
         public string Content { get; private set; }
         public Status CurrentStatus { get; private set; }
         public Guid Owner { get; private set; }
+
+        public ProductId ProductId { get; set; }
         private IList<History> History {get; set; } = new List<History>();
 
         public IList<History> GetHistory() => History;
@@ -54,11 +26,13 @@ namespace Reviews.Domain
                     Content = x.Content;
                     CurrentStatus = Status.Draft;
                     Owner = x.Owner;
+                    ProductId = x.ProductId;
                     break;
                 case Events.V1.ReviewApproved x:
                     CurrentStatus = Status.Approved;
                     Owner = x.OwnerId;
                     History.Add(new History(x.ReviewAt,x.ReviewBy,Status.Approved));
+                    ProductId = x.ProductId;
                     break;
                 
                 case Events.V1.CaptionAndContentChanged x:
@@ -77,7 +51,36 @@ namespace Reviews.Domain
             } 
         }
 
-        public static Review Create(Guid id,UserId ownerId, string caption, string context)
+        protected override void EnsureValidState()
+        {
+            var valid = Id != null && Owner != null && ProductId!=null;
+            switch (CurrentStatus)
+            {
+                case Status.Draft:
+                    valid = valid
+                            && Caption != null
+                            && Content != null;
+                           
+                    break;
+                case Status.Approved:
+                    valid = valid
+                            && Caption != null
+                            && Content != null
+                            && History?.Count > 0;
+                    break;
+                case Status.PendingApprove:
+                    break;
+                case Status.Rejected:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            if (!valid)
+                throw new InvalidEntityStateException(this, $"Post-checks failed in state {CurrentStatus}");
+        }
+
+        public static Review Create(Guid id,UserId ownerId,ProductId productId, string caption, string context)
         {
             var review = new Review();
             
@@ -86,7 +89,9 @@ namespace Reviews.Domain
                 Id = id,
                 Caption = caption,
                 Content = context,
-                Owner = ownerId
+                Owner = ownerId,
+                ProductId =productId
+                
             });
             return review;
         }
@@ -102,7 +107,8 @@ namespace Reviews.Domain
                 Caption=caption,
                 Content=content,
                 ChangedAt=changedAt,
-                Owner = Owner
+                Owner = Owner,
+                ProductId = ProductId
             });
         }
         public void Publish()
@@ -137,13 +143,14 @@ namespace Reviews.Domain
                 ReviewAt = reviewAt,
                 Caption = Caption,
                 Content = Content,
-                OwnerId = Owner
+                OwnerId = Owner,
+                ProductId = ProductId
             });
         }
 
         public Snapshot TakeSnapshot()
         {
-            return new ReviewSnapshot(Guid.NewGuid(),Id,Version,Caption,Content,CurrentStatus);
+            return new ReviewSnapshot(Guid.NewGuid(),Id,Version,Caption,Content,CurrentStatus,ProductId);
         }
 
         public void ApplySnapshot(Snapshot snapshot)
@@ -154,6 +161,7 @@ namespace Reviews.Domain
             Content = item.Content;
             Caption = item.Caption;
             Version = item.Version;
+            ProductId = item.ProductId;
         }
 
         /*

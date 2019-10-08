@@ -28,7 +28,8 @@ namespace Reviews.Service.WebApi.Modules.Reviews.Projections
                             Content = view.Content.ToUpper(),
                             Owner =  view.OwnerId.ToString(),
                             ReviewAt = view.ReviewAt,
-                            ReviewBy = view.ReviewBy.ToString()
+                            ReviewBy = view.ReviewBy.ToString(),
+                            ProductId = view.ProductId.ToString()
                         };
                         await session.StoreAsync(document);
                         break;

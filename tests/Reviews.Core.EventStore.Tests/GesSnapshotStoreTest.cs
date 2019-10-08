@@ -36,6 +36,7 @@ namespace Reviews.Core.EventStore.Tests
         }
         
         private Guid AggregateId { get; } = Guid.NewGuid();
+        private Guid ProductId { get; } = Guid.NewGuid();
         private string Caption { get; } = "Test Review";
         private string Content { get; } = "Test content";
         
@@ -47,6 +48,7 @@ namespace Reviews.Core.EventStore.Tests
             aggregate.Apple(AutoFixture.Build<Domain.Events.V1.ReviewCreated>()
                 .With(e=>e.Caption,Caption)
                 .With(e=>e.Content,Content)
+                .With(e=>e.ProductId,ProductId)
                 .With(e=>e.Id,AggregateId).Create());
             aggregate.Apple(AutoFixture.Build<Domain.Events.V1.ReviewPublished>().With(e=>e.Id,AggregateId).Create());
             aggregate.Apple(AutoFixture.Build<Domain.Events.V1.ReviewApproved>().With(e=>e.Id,AggregateId).Create());
@@ -60,7 +62,7 @@ namespace Reviews.Core.EventStore.Tests
 
             //Then
             outputHelper.WriteLine($"Snapshot result last Version:{result.Version}");
-            result.Should().BeEquivalentTo(new ReviewSnapshot(Guid.Empty, AggregateId,-1,Caption,Content,Status.Approved),
+            result.Should().BeEquivalentTo(new ReviewSnapshot(Guid.Empty, AggregateId,-1,Caption,Content,Status.Approved,ProductId),
                 o => o.ExcludingFields().Excluding(q=>q.Id).Excluding(q=>q.CurrentStatus));
                
         }

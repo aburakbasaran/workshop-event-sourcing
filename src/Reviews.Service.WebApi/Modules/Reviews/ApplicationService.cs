@@ -17,7 +17,7 @@ namespace Reviews.Service.WebApi.Modules.Reviews
         }
 
         public Task Handle(Contracts.Reviews.V1.ReviewCreate command) =>
-            repository.SaveAsync(Domain.Review.Create(command.Id,command.Owner,command.Caption,command.Content));
+            repository.SaveAsync(Domain.Review.Create(command.Id,command.Owner,command.ProductId,command.Caption,command.Content));
 
         public Task Handle(Contracts.Reviews.V1.ReviewApprove command) => 
             HandleForUpdate(command.Id, r => r.Approve(new UserId(command.Reviewer), DateTime.UtcNow));

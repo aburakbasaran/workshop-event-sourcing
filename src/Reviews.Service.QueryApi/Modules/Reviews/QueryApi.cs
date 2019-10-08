@@ -34,6 +34,11 @@ namespace Reviews.Service.QueryApi.Modules.Reviews
         {
             return reviewQueryService.GetActiveReviewById(id);
         }
-
+        [Route("product/id")]
+        [HttpGet]
+        public Task<ReviewsByProductDocument> GetByProductId(string id)
+        {
+            return reviewQueryService.GetReviewsByProductId(id);
+        }
     }
 }

@@ -16,5 +16,7 @@ namespace Reviews.Service.Contract
         
         public DateTime ReviewAt { get; set; }
 
+        public string ProductId { get; set; }
+
     }
 }

@@ -120,7 +120,8 @@ namespace Reviews.Service.WebApi
                 .SetProjections( new Projection[]
                 {
                     new ActiveReviews(GetSession),
-                    new ReviewsByOwner(GetSession)  
+                    new ReviewsByOwner(GetSession),
+                    new ReviewsByProducts(GetSession),   
                 })
                 .StartAll();
         }

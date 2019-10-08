@@ -13,6 +13,9 @@ namespace Reviews.Service.QueryApi.Modules.Reviews
 
         private static string DocumentId(string id) => $"ActiveReviews/{id}";
         
+        private static string ProductDocumentId(string id) => $"ReviewsByProducts/{id}";
+
+        
         private readonly Func<IAsyncDocumentSession> getSession;
 
         public QueryService(Func<IAsyncDocumentSession> session) => getSession = session;
@@ -30,6 +33,13 @@ namespace Reviews.Service.QueryApi.Modules.Reviews
             var session = getSession();
 
             return session.Query<ActiveReviewDocument>().Where(q => q.Id == DocumentId(id)).FirstAsync();
+        }
+        
+        public Task<ReviewsByProductDocument> GetReviewsByProductId(string id)
+        {
+            var session = getSession();
+
+            return session.Query<ReviewsByProductDocument>().Where(q => q.Id == ProductDocumentId(id)).FirstAsync();
         }
     }
 }

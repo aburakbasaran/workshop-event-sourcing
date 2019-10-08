@@ -16,6 +16,8 @@ namespace Reviews.Domain.Events.V1
 
         public Guid OwnerId { get; set; }
 
+        public Guid ProductId { get; set; }
+
         public override string ToString() => $"Review {Id} review by {ReviewBy}";      
     }
 }

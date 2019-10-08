@@ -26,7 +26,8 @@ namespace Reviews.Domain.Test
                 Id = Command.Id,
                 Caption = Command.Caption,
                 Content = Command.Content,
-                Owner = Command.Owner
+                Owner = Command.Owner,
+                ProductId = Command.ProductId
             });
         }
 

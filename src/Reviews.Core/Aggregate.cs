@@ -13,10 +13,12 @@ namespace Reviews.Core
         public long Version { get; protected set; } = -1;
 
         protected abstract void When(object e);
+        protected abstract void EnsureValidState();
 
         public void Apple(object e)
         {
             When(e);
+            EnsureValidState();
             changes.Add(e);
         }
 

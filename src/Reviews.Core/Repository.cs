@@ -24,8 +24,11 @@ namespace Reviews.Core
             Snapshot snapshot = null;
             if ((isSnapshottable) && (snapshotStore != null))
             {
-                snapshot = ((ISnapshottable<T>) aggregate).TakeSnapshot();
-                snapshot = await snapshotStore.GetSnapshotAsync<T>(snapshot.GetType(),id);
+                if (((ISnapshottable<T>) aggregate).SnapshotFrequency().Invoke())
+                {
+                    snapshot = ((ISnapshottable<T>) aggregate).TakeSnapshot();
+                    snapshot = await snapshotStore.GetSnapshotAsync<T>(snapshot.GetType(),id);    
+                }
             }
            
             //snapshot exists?
