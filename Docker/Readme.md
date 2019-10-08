@@ -8,7 +8,7 @@ Some reference materials will be included in this file later on, so start the re
 
 ## Prerequisites
 
-- .NET Core 2.1
+- .NET Core 2.2
 - C# IDE or editor of your choice (for example Jetbrains Rider, VS Code or Visual Studio 2017)
 - Docker Compose
 
