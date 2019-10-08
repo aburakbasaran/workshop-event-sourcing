@@ -30,7 +30,8 @@ namespace Reviews.Domain.Test
                     ReviewBy = Reviewer,
                     OwnerId = OwnerId,
                     Caption = Caption,
-                    Content = Content
+                    Content = Content,
+                    ProductId = ProductId
                 }
             };
 
@@ -43,6 +44,7 @@ namespace Reviews.Domain.Test
 
         private Guid ReviewId { get; } = Guid.NewGuid();
         private Guid OwnerId { get; } = Guid.NewGuid();
+        private Guid ProductId { get; } = Guid.NewGuid();
         private Guid Reviewer { get; } = Guid.NewGuid();
         private string Caption { get; } = "Changed subjects";
         private string Content { get; } = "This is my first review...";
@@ -55,6 +57,7 @@ namespace Reviews.Domain.Test
                 .With(e=>e.Owner,OwnerId)
                 .With(e=>e.Caption,Caption)
                 .With(e=>e.Content,Content)
+                .With(e=>e.ProductId,ProductId)
                 .Create();
             
             o[1]=AutoFixture.Build<Events.V1.ReviewPublished>()

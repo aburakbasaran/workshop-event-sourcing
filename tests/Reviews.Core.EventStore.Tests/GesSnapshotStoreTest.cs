@@ -63,7 +63,7 @@ namespace Reviews.Core.EventStore.Tests
             //Then
             outputHelper.WriteLine($"Snapshot result last Version:{result.Version}");
             result.Should().BeEquivalentTo(new ReviewSnapshot(Guid.Empty, AggregateId,-1,Caption,Content,Status.Approved,ProductId),
-                o => o.ExcludingFields().Excluding(q=>q.Id).Excluding(q=>q.CurrentStatus));
+                o => o.ExcludingFields().Excluding(q=>q.Id).Excluding(q=>q.CurrentStatus).Excluding(q=>q.ProductId));
                
         }
     }
