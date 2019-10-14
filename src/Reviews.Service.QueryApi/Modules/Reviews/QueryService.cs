@@ -14,18 +14,21 @@ namespace Reviews.Service.QueryApi.Modules.Reviews
         private static string DocumentId(string id) => $"ActiveReviews/{id}";
         
         private static string ProductDocumentId(string id) => $"ReviewsByProducts/{id}";
+        
+        private static string ReviewOwnerDocumentId(string id) => $"ReviewsByOwner/{id}";
 
         
         private readonly Func<IAsyncDocumentSession> getSession;
 
         public QueryService(Func<IAsyncDocumentSession> session) => getSession = session;
 
-        public Task<List<ActiveReviewDocument>> GetAllActiveReviewDocuments(string user_id)
+        public Task<List<ReviewsByOwnerDocument>> GetAllActiveReviewDocuments(string user_id)
         {
             var session = getSession();
-            
-            return session.Query<ActiveReviewDocument>().Where(q=>q.Owner==user_id).ToListAsync();
-            
+
+            return session.Query<ReviewsByOwnerDocument>()
+                .Where(q => q.Id == ReviewOwnerDocumentId(user_id)).ToListAsync();
+
         }
 
         public Task<ActiveReviewDocument> GetActiveReviewById(string id)

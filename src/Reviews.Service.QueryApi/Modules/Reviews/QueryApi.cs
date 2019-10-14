@@ -23,7 +23,7 @@ namespace Reviews.Service.QueryApi.Modules.Reviews
 
         [Route("active/user-id")]
         [HttpGet]
-        public Task<List<ActiveReviewDocument>> GetAll(string user_id)
+        public Task<List<ReviewsByOwnerDocument>> GetAll(string user_id)
         {
             return reviewQueryService.GetAllActiveReviewDocuments(user_id);
         }
