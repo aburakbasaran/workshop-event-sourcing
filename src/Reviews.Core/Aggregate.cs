@@ -34,5 +34,7 @@ namespace Reviews.Core
         public object[] GetChanges() => changes.ToArray();
         
         public int ChangesCount() => changes.Count;
+
+        public void ClearChanges() => changes.Clear();
     }
 }

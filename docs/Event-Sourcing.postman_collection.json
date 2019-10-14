@@ -1,0 +1,217 @@
+{
+	"info": {
+		"_postman_id": "5a660fed-2fba-437d-afa9-a0638a7f581b",
+		"name": "Event-Sourcing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Command Service",
+			"item": [
+				{
+					"name": "POST Review",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"ebea2fc3-68f9-4e1d-b97a-6fde9c3d8e00\",\n  \"caption\": \"This is awesome!\",\n  \"content\": \"The product is usefull. good price&good performance!\",\n  \"owner\": \"97977e59-c8a8-4daa-9e66-ffce3cd4ae00\",\n  \"productId\": \"04ce840e-4b79-488e-960d-b4b5e584aa00\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/reviews",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"reviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Publish Review",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"ebea2fc3-68f9-4e1d-b97a-6fde9c3d8e00\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/reviews/publish",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"reviews",
+								"publish"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Approve review",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"ebea2fc3-68f9-4e1d-b97a-6fde9c3d8e00\",\n  \"reviewer\": \"ebea2fc3-68f9-4e1d-b97a-6fde9c3d8eff\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/reviews/approve",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"reviews",
+								"approve"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Review",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"ebea2fc3-68f9-4e1d-b97a-6fde9c3d8e00\",\n  \"caption\": \"This is great product!\",\n  \"content\": \"great performance & great price!\",\n  \"changedAt\": \"2019-10-14T16:24:30.439Z\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/reviews/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"reviews",
+								"update"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Query Service",
+			"item": [
+				{
+					"name": "Get Active User's Review",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5005/reviews/active/user-id?user_id=97977e59-c8a8-4daa-9e66-ffce3cd4ae00",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5005",
+							"path": [
+								"reviews",
+								"active",
+								"user-id"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "97977e59-c8a8-4daa-9e66-ffce3cd4ae00"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Active Product's Review By ProductId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5005/reviews/product/id?id=04ce840e-4b79-488e-960d-b4b5e584aa00",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5005",
+							"path": [
+								"reviews",
+								"product",
+								"id"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "04ce840e-4b79-488e-960d-b4b5e584aa00"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Review By ReviewId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5005/reviews/active?id=ebea2fc3-68f9-4e1d-b97a-6fde9c3d8e00",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5005",
+							"path": [
+								"reviews",
+								"active"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "ebea2fc3-68f9-4e1d-b97a-6fde9c3d8e00"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

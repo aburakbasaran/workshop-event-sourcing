@@ -11,20 +11,20 @@ namespace Reviews.Domain.Test
     {
         private Dictionary<Guid,object> snapshotStore=new Dictionary<Guid, object>();
         
-        public Task<Snapshot> GetSnapshotAsync<T>(Type type, Guid aggregateId)
+        public Task<Snapshot> GetSnapshotAsync<T>(Guid aggregateId) where T:Aggregate
         {
             var s = default(T);
             return  Task.FromResult((Snapshot) snapshotStore.GetValueOrDefault(aggregateId));
         }
 
-        public Task<long> SaveSnapshotAsync(Snapshot snapshot)
+        public Task<long> SaveSnapshotAsync<T>(Snapshot snapshot) where T:Aggregate
         {
             snapshotStore.Add(snapshot.AggregateId, snapshot);
             return Task.FromResult(long.MaxValue);
         }
     }
     
-    public class SpecificationAggregateStore : IAggrigateStore
+    public class SpecificationAggregateStore : IAggregateStore
     {
         private Aggregate aggregate;
         

@@ -8,7 +8,7 @@ namespace Reviews.Core
         public Guid AggregateId { get; }
         public long Version { get; }
 
-        public Snapshot()
+        protected Snapshot()
         {
             
         }

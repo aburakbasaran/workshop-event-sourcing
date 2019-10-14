@@ -11,25 +11,16 @@ namespace Reviews.Core.EventStore
 {
     public delegate string GetStreamName(Type aggregateType, string aggregateId);
     
-    public class GesAggrigateStore : IAggrigateStore
+    public class GesAggregateStore : IAggregateStore
     {
         private const int MaximumReadSize = 4096;
-        
-        
-        
         private readonly IEventStoreConnection eventStoreConnection;
-        private readonly GetStreamName getStreamName;
-        
         private readonly UserCredentials userCredentials;
         
-        
-        public GesAggrigateStore(IEventStoreConnection eventStoreConnection, 
-                                GetStreamName getStreamName,
+        public GesAggregateStore(IEventStoreConnection eventStoreConnection, 
                                 UserCredentials userCredentials=null)
         {
             this.eventStoreConnection = eventStoreConnection ?? throw new ArgumentNullException(nameof(eventStoreConnection));;
-            this.getStreamName = getStreamName ?? throw new ArgumentException(nameof(getStreamName));
-
             this.userCredentials = userCredentials;
         }
         
@@ -57,6 +48,8 @@ namespace Reviews.Core.EventStore
             try
             {
                 result = await eventStoreConnection.AppendToStreamAsync(stream, aggregate.Version, changes, userCredentials);
+                
+                aggregate.ClearChanges();
             }
             catch (WrongExpectedVersionException ex)
             {

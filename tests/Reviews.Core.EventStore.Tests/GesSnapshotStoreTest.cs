@@ -25,10 +25,10 @@ namespace Reviews.Core.EventStore.Tests
             aggregate.Apple(AutoFixture.Create<Domain.Events.V1.ReviewCreated>());
             aggregate.Apple(AutoFixture.Create<Domain.Events.V1.ReviewApproved>());
             
-            var sut = new GesSnapshotStore(Connection, (a, b) => $"{a}-{b}", null);
+            var sut = new GesSnapshotStore(Connection, null);
             
             //When
-            var result =await  sut.SaveSnapshotAsync(aggregate.TakeSnapshot());
+            var result =await  sut.SaveSnapshotAsync<Review>(aggregate.TakeSnapshot());
 
             //Then
             outputHelper.WriteLine($"Snapshot result last position:{result}");
@@ -53,12 +53,12 @@ namespace Reviews.Core.EventStore.Tests
             aggregate.Apple(AutoFixture.Build<Domain.Events.V1.ReviewPublished>().With(e=>e.Id,AggregateId).Create());
             aggregate.Apple(AutoFixture.Build<Domain.Events.V1.ReviewApproved>().With(e=>e.Id,AggregateId).Create());
             
-            var sut = new GesSnapshotStore(Connection, (a, b) => $"{a}-{b}", null);
+            var sut = new GesSnapshotStore(Connection,  null);
             var snap = aggregate.TakeSnapshot();
-            await  sut.SaveSnapshotAsync(snap); 
+            await  sut.SaveSnapshotAsync<Review>(snap); 
             
             //When
-            var result = await sut.GetSnapshotAsync<Review>(typeof(ReviewSnapshot), AggregateId);
+            var result = await sut.GetSnapshotAsync<Review>( AggregateId);
 
             //Then
             outputHelper.WriteLine($"Snapshot result last Version:{result.Version}");

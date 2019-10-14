@@ -90,5 +90,9 @@ the puzzle starts here ```git clone https://github.com/alperhankendi/workshop-ev
 
 have fun!
 
+## Command & Query Api Request Samples
+
+[Sample Request Sample](https://documenter.getpostman.com/view/3440876/SVtWxnr3?version=latest)
+
 ## Notes
 What brings you here of course not unique. I inspired a lot from [WorkshopEventSourcing](https://github.com/UbiquitousAS/WorkshopEventSourcing)

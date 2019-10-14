@@ -20,8 +20,8 @@
     "Reviews.Service.QueryApi": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/reviews",
-      "applicationUrl": "http://localhost:5000",
+      "launchUrl": "swagger",
+      "applicationUrl": "http://localhost:5005",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

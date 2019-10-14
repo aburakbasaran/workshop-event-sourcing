@@ -82,7 +82,7 @@ namespace Reviews.Core.EventStore
                 await projection.Handle(domainEvent);
                 
                 //store current checkpoint
-                                checkpointStore.SetCheckpoint(e.OriginalPosition.Value, projection);
+                checkpointStore.SetCheckpoint(e.OriginalPosition.Value, projection);
                                 
                 Console.WriteLine($"{domainEvent} projected into {projection}");
 

@@ -71,10 +71,6 @@ namespace Reviews.Service.WebApi
             });
         }
 
-        private void RegisterDependecies(IServiceCollection service)
-        {
-        }
-
         private async Task BuildEventStore(IServiceCollection services)
         {
             //Create EventStore Connection
@@ -96,20 +92,15 @@ namespace Reviews.Service.WebApi
             
             await eventStoreConnection.ConnectAsync();
             
-            var aggregateStore = new GesAggrigateStore(
-                eventStoreConnection, 
-                (type, id) => $"{type.Name}-{id}", 
-                null);
-
-            var gesSnapshotStore = new GesSnapshotStore(eventStoreConnection,
-                (type, id) => $"{type.Name}-{id}",
-                null);
+            var aggregateStore = new GesAggregateStore(eventStoreConnection, null);
+            var gesSnapshotStore = new GesSnapshotStore(eventStoreConnection,null);
             
             var repository = new Repository(aggregateStore,gesSnapshotStore);
 
             services.AddSingleton<IRepository>(repository);
             
             services.AddSingleton(new ApplicationService(repository));
+            
             var documentStore = RavenDbConfiguration.Build(Configuration["RavenDb:Url"], Configuration["RavenDb:Database"]);
             
             IAsyncDocumentSession GetSession() => documentStore.OpenAsyncSession();

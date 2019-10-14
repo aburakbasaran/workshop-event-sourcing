@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Reviews.Core
 {
-    public interface IAggrigateStore
+    public interface IAggregateStore
     {
         Task<(long NextExceptedVersion, long LastPosition, long CommitPosition)> Save<T>(T aggregate,CancellationToken cancellationToken = default) 
             where T : Aggregate;

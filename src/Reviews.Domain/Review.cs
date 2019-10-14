@@ -161,6 +161,7 @@ namespace Reviews.Domain
             Content = item.Content;
             Caption = item.Caption;
             Version = item.Version;
+            CurrentStatus = item.CurrentStatus;
             ProductId = item.ProductId;
         }
 

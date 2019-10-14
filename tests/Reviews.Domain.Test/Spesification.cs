@@ -30,7 +30,7 @@ namespace Reviews.Domain.Test
             }
             
             RaisedEvents = store.RaisedEvents;
-            Snapshots = snapshotStore.GetSnapshotAsync<TAggregate>(null,sut.Id).Result;
+            Snapshots = snapshotStore.GetSnapshotAsync<TAggregate>(sut.Id).Result;
 
             if (Snapshots != null)
             {

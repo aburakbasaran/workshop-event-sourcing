@@ -6,10 +6,10 @@ namespace Reviews.Core
 {
     public class Repository : IRepository
     {
-        private readonly IAggrigateStore aggregateStore;
+        private readonly IAggregateStore aggregateStore;
         private readonly ISnapshotStore snapshotStore;
 
-        public Repository(IAggrigateStore aggregateStore,ISnapshotStore snapshotStore)
+        public Repository(IAggregateStore aggregateStore,ISnapshotStore snapshotStore)
         {
             this.aggregateStore = aggregateStore;
             this.snapshotStore = snapshotStore;
@@ -18,17 +18,11 @@ namespace Reviews.Core
         public async Task<T> GetByIdAsync<T>(Guid id) where T : Aggregate, new()
         {
             var isSnapshottable = typeof(ISnapshottable<T>).GetTypeInfo().IsAssignableFrom(typeof(T).GetTypeInfo());
-           
-            var aggregate = new T();
             
             Snapshot snapshot = null;
             if ((isSnapshottable) && (snapshotStore != null))
             {
-                if (((ISnapshottable<T>) aggregate).SnapshotFrequency().Invoke())
-                {
-                    snapshot = ((ISnapshottable<T>) aggregate).TakeSnapshot();
-                    snapshot = await snapshotStore.GetSnapshotAsync<T>(snapshot.GetType(),id);    
-                }
+                    snapshot = await snapshotStore.GetSnapshotAsync<T>(id);    
             }
            
             //snapshot exists?
@@ -63,7 +57,7 @@ namespace Reviews.Core
                 if (snapshottable.SnapshotFrequency().Invoke())
                 {
                     Console.WriteLine("taking snapshot...");
-                    snapshotStore.SaveSnapshotAsync(snapshottable.TakeSnapshot());
+                    snapshotStore.SaveSnapshotAsync<T>(snapshottable.TakeSnapshot());
                 }
             }
             #endregion
