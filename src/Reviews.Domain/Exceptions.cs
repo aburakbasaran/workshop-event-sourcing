@@ -6,4 +6,12 @@ namespace Reviews.Domain
     {
         public ReviewNotFoundException(Guid id) : base($"Review with id '{id}' was not found") { }
     }
+    
+    public class InvalidEntityStateException : Exception
+    {
+        public InvalidEntityStateException(object entity, string message)
+            : base($"Entity {entity.GetType().Name} state change rejected, {message}")
+        {
+        }
+    }
 }
