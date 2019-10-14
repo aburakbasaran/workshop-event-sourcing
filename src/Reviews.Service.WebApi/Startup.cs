@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
+using EventStore.ClientAPI.SystemData;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -73,6 +74,7 @@ namespace Reviews.Service.WebApi
 
         private async Task BuildEventStore(IServiceCollection services)
         {
+            
             //Create EventStore Connection
             var eventStoreConnection = EventStoreConnection.Create(
                 Configuration["EventStore:ConnectionString"],
@@ -92,7 +94,11 @@ namespace Reviews.Service.WebApi
             
             await eventStoreConnection.ConnectAsync();
             
-            var aggregateStore = new GesAggregateStore(eventStoreConnection, null);
+            /*
+            eventStore cluster connection builder
+            var eventStoreConnection= await EventStoreConnectionBuilder.ConfigureStore();
+            */
+            var aggregateStore = new GesAggregateStore(eventStoreConnection,null);
             var gesSnapshotStore = new GesSnapshotStore(eventStoreConnection,null);
             
             var repository = new Repository(aggregateStore,gesSnapshotStore);
