@@ -51,7 +51,7 @@ namespace Reviews.Core.EventStore
                 
                 aggregate.ClearChanges();
             }
-            catch (WrongExpectedVersionException ex)
+            catch (WrongExpectedVersionException)
             {
                 var chunk = await eventStoreConnection.ReadStreamEventsBackwardAsync(stream, -1, 1,false, userCredentials);
                 
