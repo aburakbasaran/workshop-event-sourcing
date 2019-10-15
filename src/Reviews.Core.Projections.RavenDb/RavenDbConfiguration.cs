@@ -5,7 +5,7 @@ using Raven.Client.Documents.Indexes;
 using Raven.Client.ServerWide;
 using Raven.Client.ServerWide.Operations;
 
-namespace Reviews.Service.WebApi
+namespace Reviews.Core.Projections.RavenDb
 {
     public static class RavenDbConfiguration
     {

@@ -113,7 +113,7 @@ namespace Reviews.Service.WebApi
             
             await ProjectionManager.With
                 .Connection(eventStoreConnection)
-                .CheckpointStore(new RavenDbChecklpointStore(GetSession))
+                .CheckpointStore(new RavenDbCheckPointStore(GetSession))
                 .SetProjections( new Projection[]
                 {
                     new ActiveReviews(GetSession),

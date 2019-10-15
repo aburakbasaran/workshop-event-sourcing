@@ -30,7 +30,7 @@ namespace Reviews.Core.Projections.RavenDb.Test
             
             //can set checkpoint
             //Given
-            var sut = new RavenDbChecklpointStore(GetDocumentSession);
+            var sut = new RavenDbCheckPointStore(GetDocumentSession);
             var projection = AutoFixture.Create<string>();
             var expectedCheckpoint = new Position();
 

@@ -20,7 +20,6 @@ namespace Reviews.Service.QueryApi
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1); services.AddSwaggerGen(c =>
@@ -33,14 +32,13 @@ namespace Reviews.Service.QueryApi
                     });
             });
             
-            IAsyncDocumentSession GetSession() => BuildRevenDb().OpenAsyncSession();
+            IAsyncDocumentSession GetSession() => BuildRavenDb().OpenAsyncSession();
             var queryService = new QueryService(GetSession);
             services.AddSingleton(queryService);
 
 
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
@@ -56,7 +54,7 @@ namespace Reviews.Service.QueryApi
         }
         
         
-         private IDocumentStore BuildRevenDb()
+         private IDocumentStore BuildRavenDb()
         {
             var store = new DocumentStore {
                 Urls     = new[] {Configuration["RavenDb:Url"]},

@@ -47,12 +47,14 @@ namespace Reviews.Core.EventStore
 
             var lastCheckpoint = await checkpointStore.GetLastCheckpoint<Position>(projection);
 
-            var s = projection.ToString();
             var catchUpSubscriptionSettings = new CatchUpSubscriptionSettings(maxLiveQueueSize,readBatchSize,verboseLogging,false,projection.ToString());
 
-            var storeAllCatchUpSubscription=eventStoreConnection.SubscribeToAllFrom(lastCheckpoint, catchUpSubscriptionSettings,
-                eventAppeared(projection),
-                liveProcessingStarted(projection),subscriptionDropped(projection),userCredentials );
+            eventStoreConnection.SubscribeToAllFrom(lastCheckpoint, 
+                                                    catchUpSubscriptionSettings,
+                                                    eventAppeared(projection),
+                                                    LiveProcessingStarted(projection),
+                                                    SubscriptionDropped(projection),
+                                                    userCredentials);
 
         }
         //https://eventstore.org/blog/20130306/getting-started-part-3-subscriptions/
@@ -76,7 +78,7 @@ namespace Reviews.Core.EventStore
                 if (eventType == null) return;
                 // deserialize the event.
 
-                var domainEvent = e.Deserialze(); //serializer.Deserialize(e.Event.Data, eventType);
+                var domainEvent = e.Deserialze();
 
                 //build your projection
                 await projection.Handle(domainEvent);
@@ -88,7 +90,7 @@ namespace Reviews.Core.EventStore
 
             };
 
-        private Action<EventStoreCatchUpSubscription> liveProcessingStarted(Projection projection) 
+        private Action<EventStoreCatchUpSubscription> LiveProcessingStarted(Projection projection) 
             => async (eventStoreCatchUpSubscription) =>
             {
                 Console.WriteLine($"{projection} has been started,now processing real time!");
@@ -98,7 +100,7 @@ namespace Reviews.Core.EventStore
         //https://github.com/EventStore/EventStore/issues/929
         //https://github.com/EventStore/EventStore/issues/1127
         //still open issue on EventStore...
-        private Action<EventStoreCatchUpSubscription, SubscriptionDropReason, Exception> subscriptionDropped(Projection projection)
+        private Action<EventStoreCatchUpSubscription, SubscriptionDropReason, Exception> SubscriptionDropped(Projection projection)
             => async (eventStoreCatchUpSubscription, subscriptionDropReason, exception) =>
             {
                 
