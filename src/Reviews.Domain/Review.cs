@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Reviews.Core;
+using Reviews.Domain.Events.V1;
 
 namespace Reviews.Domain
 {
@@ -28,6 +29,26 @@ namespace Reviews.Domain
                     Owner = x.Owner;
                     ProductId = x.ProductId;
                     break;
+                
+                case Events.V1.ReviewPublished x:
+                    CurrentStatus = Status.PendingApprove;
+                    break;
+                
+                case Events.V1.ReviewApproved x:
+                    CurrentStatus = Status.Approved;
+                    History.Add(new History(x.ReviewAt,x.ReviewBy,Status.Approved));
+                    break;
+                
+                case Events.V1.CaptionAndContentChanged x:
+                    Caption = x.Caption;
+                    Content = x.Content;
+                    CurrentStatus = Status.Draft;
+                    
+                    if(CurrentStatus == Status.Approved || CurrentStatus==Status.Rejected)
+                        CurrentStatus = Status.PendingApprove;
+                    
+                    break;
+                
             } 
         }
 
@@ -40,7 +61,15 @@ namespace Reviews.Domain
                     valid = valid
                             && Caption != null
                             && Content != null;
-                           
+                    break;
+                
+                case Status.Approved:
+                    valid = valid
+                            && Caption != null
+                            && Content != null
+                            && History?.Count > 0;
+                    break;
+                case Status.PendingApprove:
                     break;
                 
                 default:
@@ -65,6 +94,61 @@ namespace Reviews.Domain
                 
             });
             return review;
+        }
+
+        public void Publish()
+        {
+            if (Version == -1)
+            {
+                throw new ReviewNotFoundException(Id);
+            }
+
+            if (CurrentStatus == Status.Draft || CurrentStatus == Status.Rejected)
+            {
+                Apple(new ReviewPublished
+                {
+                    Id = Id,
+                    ChangedAt = DateTime.UtcNow
+                });
+            }
+        }
+
+        public void Approve(UserId reviewBy, DateTime reviewAt)
+        {
+            if (Version == -1)
+                throw new ReviewNotFoundException(Id);
+
+            if (CurrentStatus != Status.PendingApprove)
+            {
+                throw new Exception($"you can't approve thats. Review : {Id}-V:{Version}  Status:{CurrentStatus}");
+            }
+            
+            Apple(new Events.V1.ReviewApproved
+            {
+                Id = Id,
+                ReviewBy = reviewBy,
+                ReviewAt = reviewAt,
+                Caption = Caption,
+                Content = Content,
+                OwnerId = Owner,
+                ProductId = ProductId
+            });
+        }
+
+        public void UpdateCaptionAndContent(string caption, string content,DateTime changedAt)
+        {
+            if (Version == -1)
+                throw new ReviewNotFoundException(Id);
+            
+            Apple(new Events.V1.CaptionAndContentChanged
+            {
+                Id=Id,
+                Caption=caption,
+                Content=content,
+                ChangedAt=changedAt,
+                Owner = Owner,
+                ProductId = ProductId
+            });
         }
     }
 }
