@@ -1,21 +1,15 @@
 using System;
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
-using EventStore.ClientAPI.SystemData;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Raven.Client.Documents.Session;
 using Reviews.Core.EventStore;
 using Reviews.Core;
-using Reviews.Core.Projections;
-using Reviews.Core.Projections.RavenDb;
 using Reviews.Service.WebApi.Modules.Reviews;
-using Reviews.Service.WebApi.Modules.Reviews.Projections;
 using Swashbuckle.AspNetCore.Swagger;
-
 
 namespace Reviews.Service.WebApi
 {
@@ -99,28 +93,8 @@ namespace Reviews.Service.WebApi
             var eventStoreConnection= await EventStoreConnectionBuilder.ConfigureStore();
             */
             var aggregateStore = new GesAggregateStore(eventStoreConnection,null);
-            var gesSnapshotStore = new GesSnapshotStore(eventStoreConnection,null);
             
-            var repository = new Repository(aggregateStore,gesSnapshotStore);
-
-            services.AddSingleton<IRepository>(repository);
-            
-            services.AddSingleton(new ApplicationService(repository));
-            
-            var documentStore = RavenDbConfiguration.Build(Configuration["RavenDb:Url"], Configuration["RavenDb:Database"]);
-            
-            IAsyncDocumentSession GetSession() => documentStore.OpenAsyncSession();
-            
-            await ProjectionManager.With
-                .Connection(eventStoreConnection)
-                .CheckpointStore(new RavenDbCheckPointStore(GetSession))
-                .SetProjections( new Projection[]
-                {
-                    new ActiveReviews(GetSession),
-                    new ReviewsByOwner(GetSession),
-                    new ReviewsByProducts(GetSession),   
-                })
-                .StartAll();
+            services.AddSingleton(new ApplicationService(aggregateStore));
         }
     }
 }

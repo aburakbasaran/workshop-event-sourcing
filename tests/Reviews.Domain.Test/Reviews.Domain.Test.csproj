@@ -14,7 +14,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Reviews.Core\Reviews.Core.csproj" />
     <ProjectReference Include="..\..\src\Reviews.Domain\Reviews.Domain.csproj" />
-    <ProjectReference Include="..\..\src\Reviews.Service.Contract\Reviews.Service.Contract.csproj" />
     <ProjectReference Include="..\..\src\Reviews.Service.WebApi\Reviews.Service.WebApi.csproj" />
   </ItemGroup>
 </Project>

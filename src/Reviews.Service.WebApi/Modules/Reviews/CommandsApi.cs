@@ -18,18 +18,6 @@ namespace Reviews.Service.WebApi.Modules.Reviews
         [HttpPost]
         public Task<IActionResult> Post(Contracts.Reviews.V1.ReviewCreate command) => HandleOrThrow(command, app => applicationService.Handle(app));
         
-        [Route("approve")]
-        [HttpPut]
-        public Task<IActionResult> Put(Contracts.Reviews.V1.ReviewApprove command) => HandleOrThrow(command, app => applicationService.Handle(app));
-
-        [Route("publish")]
-        [HttpPut]
-        public Task<IActionResult> Put(Contracts.Reviews.V1.ReviewPublish command) => HandleOrThrow(command, app => applicationService.Handle(app));
-               
-        [Route("update")]
-        [HttpPut]
-        public Task<IActionResult> Put(Contracts.Reviews.V1.UpdateReview command) => HandleOrThrow(command, app => applicationService.Handle(app));
-       
         private async Task<IActionResult> HandleOrThrow<T>(T request,Func<T,Task> handle)
         {
             try

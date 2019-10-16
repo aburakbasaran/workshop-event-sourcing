@@ -17,12 +17,11 @@ namespace Reviews.Domain.Test
 
             var sut = new TAggregate();
             var store = new SpecificationAggregateStore(sut);
-            var snapshotStore = new SpesificationAggregateSnapshotStore();
             
             try
             {
                 sut.Load(History);
-                GetHandler(store,snapshotStore)(Command).GetAwaiter().GetResult();
+                GetHandler(store)(Command).GetAwaiter().GetResult();
             }
             catch (Exception e)
             {
@@ -30,12 +29,6 @@ namespace Reviews.Domain.Test
             }
             
             RaisedEvents = store.RaisedEvents;
-            Snapshots = snapshotStore.GetSnapshotAsync<TAggregate>(sut.Id).Result;
-
-            if (Snapshots != null)
-            {
-                outputHelper.WriteLine($"Snapshot:{Snapshots.AggregateId},{Snapshots.Version}");
-            }
             
             if (CaughtException!=null)
                 outputHelper.WriteLine($"Error : {CaughtException.ToString()}");
@@ -44,12 +37,11 @@ namespace Reviews.Domain.Test
 
         }
 
-        public Snapshot Snapshots { get; }
         public object[] RaisedEvents { get; }
         
         public object[] History { get; private set; } 
         public abstract object[] Given();
-        public abstract Func<TCommand, Task> GetHandler(SpecificationAggregateStore store,SpesificationAggregateSnapshotStore snapshotStores);
+        public abstract Func<TCommand, Task> GetHandler(SpecificationAggregateStore store);
         
         public TCommand Command { get; }
         public abstract TCommand When();
