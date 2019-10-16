@@ -74,9 +74,9 @@ namespace Reviews.Domain.Test
             .Create();
         
         
-        public override Func<Contracts.Reviews.V1.ReviewApprove, Task> GetHandler(SpecificationAggregateStore store,SpesificationAggregateSnapshotStore snapshotStore)
+        public override Func<Contracts.Reviews.V1.ReviewApprove, Task> GetHandler(SpecificationAggregateStore store)
         {
-            return cmd => new ApplicationService(new Repository(store,null)).Handle(cmd);
+            return cmd => new ApplicationService(store).Handle(cmd);
         }
 
        

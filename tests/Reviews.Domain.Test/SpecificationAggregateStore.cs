@@ -6,24 +6,6 @@ using Reviews.Core;
 
 namespace Reviews.Domain.Test
 {
-
-    public class SpesificationAggregateSnapshotStore : ISnapshotStore
-    {
-        private Dictionary<Guid,object> snapshotStore=new Dictionary<Guid, object>();
-        
-        public Task<Snapshot> GetSnapshotAsync<T>(Guid aggregateId) where T:Aggregate
-        {
-            var s = default(T);
-            return  Task.FromResult((Snapshot) snapshotStore.GetValueOrDefault(aggregateId));
-        }
-
-        public Task<long> SaveSnapshotAsync<T>(Snapshot snapshot) where T:Aggregate
-        {
-            snapshotStore.Add(snapshot.AggregateId, snapshot);
-            return Task.FromResult(long.MaxValue);
-        }
-    }
-    
     public class SpecificationAggregateStore : IAggregateStore
     {
         private Aggregate aggregate;

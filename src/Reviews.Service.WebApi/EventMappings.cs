@@ -10,9 +10,6 @@ namespace Reviews.Service.WebApi
             Map<Domain.Events.V1.CaptionAndContentChanged>("reviewUpdated");
             Map<Domain.Events.V1.ReviewPublished>("reviewPublished");
             Map<Domain.Events.V1.ReviewApproved>("reviewApproved");
-            
-            //Snapshot
-            Map<Domain.ReviewSnapshot>("reviewSnapshot");
         }
     }
 }

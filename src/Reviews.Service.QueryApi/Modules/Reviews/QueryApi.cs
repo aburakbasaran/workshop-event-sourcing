@@ -11,8 +11,6 @@ namespace Reviews.Service.QueryApi.Modules.Reviews
     [ApiController]
     public class QueryApi
     {
-        
-        
         private readonly QueryService reviewQueryService;
 
         public QueryApi(QueryService queryService)=>  reviewQueryService = queryService;

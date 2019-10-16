@@ -99,13 +99,8 @@ namespace Reviews.Service.WebApi
             var eventStoreConnection= await EventStoreConnectionBuilder.ConfigureStore();
             */
             var aggregateStore = new GesAggregateStore(eventStoreConnection,null);
-            var gesSnapshotStore = new GesSnapshotStore(eventStoreConnection,null);
             
-            var repository = new Repository(aggregateStore,gesSnapshotStore);
-
-            services.AddSingleton<IRepository>(repository);
-            
-            services.AddSingleton(new ApplicationService(repository));
+            services.AddSingleton(new ApplicationService(aggregateStore));
             
             var documentStore = RavenDbConfiguration.Build(Configuration["RavenDb:Url"], Configuration["RavenDb:Database"]);
             
