@@ -43,8 +43,8 @@ namespace Reviews.Domain
                            
                     break;
                 
-                default:
-                    throw new ArgumentOutOfRangeException();
+                //default:
+                //    throw new ArgumentOutOfRangeException();
             }
 
             if (!valid)
