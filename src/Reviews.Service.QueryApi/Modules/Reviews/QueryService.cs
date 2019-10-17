@@ -45,4 +45,6 @@ namespace Reviews.Service.QueryApi.Modules.Reviews
             return session.Query<ReviewsByProductDocument>().Where(q => q.Id == ProductDocumentId(id)).FirstAsync();
         }
     }
+
+    
 }

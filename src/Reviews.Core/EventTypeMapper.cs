@@ -28,7 +28,7 @@ namespace Reviews.Core
         public static string GetTypeName(Type type)
         {
             if (!TryGetEventName(type, out var name))
-                throw new Exception($"Failed to find name mapped with '{type}'");
+                return string.Empty;// throw new Exception($"Failed to find name mapped with '{type}'");
 
             return name;
         }
@@ -36,7 +36,7 @@ namespace Reviews.Core
         public static Type GetType(string name)
         {
             if (!TryGetEventType(name, out var type))
-                throw new Exception($"Failed to find type mapped with '{name}'");
+                return null;//throw new Exception($"Failed to find type mapped with '{name}'");
 
             return type;
         }

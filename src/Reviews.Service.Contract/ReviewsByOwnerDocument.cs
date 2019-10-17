@@ -1,8 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Reviews.Service.Contract
 {
+    public class ReviewsByOwnerDocument
+    {
+        public string Id { get; set; }
+        public IList<ReviewDocument> ListOfReviews { get; set; }
+        
+
+    }
     public class ReviewDocument
     {
         public Guid Id { get; set; }
