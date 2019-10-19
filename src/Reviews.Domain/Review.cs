@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Runtime.InteropServices;
 using Reviews.Core;
 
 namespace Reviews.Domain
 {
-    public class Review :Aggregate
+    public class Review :Aggregate, ISnapshottable<Review>
     {
         public string Caption { get; private set; }
         public string Content { get; private set; }
@@ -146,6 +148,30 @@ namespace Reviews.Domain
                 OwnerId = Owner,
                 ProductId = ProductId
             });
+        }
+
+        public Snapshot TakeSnapshot()
+        {
+            return new ReviewSnapshot(Guid.NewGuid(),Id,Version,Caption,Content,CurrentStatus,ProductId);
+        }
+
+
+        public void ApplySnapshot(Snapshot snapshot)
+        {
+            var item = (ReviewSnapshot)snapshot;
+
+            Id = item.AggregateId;
+            Content = item.Content;
+            Caption = item.Caption;
+            Version = item.Version;
+            CurrentStatus = item.CurrentStatus;
+            ProductId = item.ProductId;
+        }
+
+        public Func<bool> SnapshotFrequency()
+        {
+            return () => CurrentStatus == Status.Approved;
+            //return ()=>Version % 0 == 100;
         }
     }
 }

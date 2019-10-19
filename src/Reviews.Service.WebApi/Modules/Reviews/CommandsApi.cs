@@ -39,6 +39,7 @@ namespace Reviews.Service.WebApi.Modules.Reviews
             }
             catch (Exception e)
             {
+                Console.WriteLine(e);
                 return  new BadRequestResult();
 
             }
