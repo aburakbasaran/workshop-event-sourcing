@@ -66,8 +66,7 @@ The workshop source files are located in the `branches` and there are several st
 
 - `01-event-store-before` is to get things started
 - `02-projection-before` shows how events are being persisted
-- `03-persist-subscriptions-before` explains how to build read models
-- `04-snapshot-before`explains how to take snaphot and persist them
+- `03-snapshot-before`explains how to take snaphot and persist them
 
 ```
 $ git checkout 01-event-store-before
@@ -84,7 +83,6 @@ Check if EventStore and RavenDb respond via http by visiting the administration 
 
 - [EventStore](http://localhost:2113), user name is "admin" and password is "changeit"
 - [RavenDb](http://localhost:8080)
-- [Redis](tcp://localhost:6379)
 
 the puzzle starts here ```git clone https://github.com/alperhankendi/workshop-event-sourcing/tree/01-event-store-before```
 
