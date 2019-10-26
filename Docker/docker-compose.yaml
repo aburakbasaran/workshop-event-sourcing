@@ -21,9 +21,3 @@ services:
     environment:
       - RAVEN_Security_UnsecuredAccessAllowed=PublicNetwork
       - RAVEN_ARGS="--Setup.Mode=None"
-
-  redisSnapshotStore:
-    container_name: demo-redisStore
-    image: redis
-    ports:
-      - 6379:6379
