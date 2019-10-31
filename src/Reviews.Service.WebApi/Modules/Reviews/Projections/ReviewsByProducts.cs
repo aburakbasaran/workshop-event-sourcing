@@ -12,9 +12,9 @@ namespace Reviews.Service.WebApi.Modules.Reviews.Projections
     public class ReviewsByProducts : Projection
     {
         private static string DocumentId(Guid id) => $"ReviewsByProducts/{id}";
-        private readonly Func<IAsyncDocumentSession> getSession;
+        private readonly Func<IDocumentSession> getSession;
 
-        public ReviewsByProducts(Func<IAsyncDocumentSession> session)=> getSession = session;
+        public ReviewsByProducts(Func<IDocumentSession> session)=> getSession = session;
 
         public override async Task Handle(object e)
         {
@@ -25,7 +25,7 @@ namespace Reviews.Service.WebApi.Modules.Reviews.Projections
                     case Domain.Events.V1.ReviewCreated ev:
 
                         var documentId = DocumentId(ev.ProductId);
-                        var document = await session.LoadAsync<ReviewsByProductDocument>(documentId);
+                        var document =  session.Load<ReviewsByProductDocument>(documentId);
 
                         if (document == null)
                         {
@@ -34,7 +34,7 @@ namespace Reviews.Service.WebApi.Modules.Reviews.Projections
                                 Id = documentId,
                                 ListOfReviews = new List<ReviewDocument>()
                             };
-                            await session.StoreAsync(document);
+                            session.Store(document);
                         }
                         
                         document.ListOfReviews.Add(new ReviewDocument
@@ -49,7 +49,7 @@ namespace Reviews.Service.WebApi.Modules.Reviews.Projections
                     
                     case Domain.Events.V1.ReviewApproved ev:
 
-                        await session.Update<ReviewsByProductDocument>(DocumentId(ev.ProductId), doc =>
+                        session.Update<ReviewsByProductDocument>(DocumentId(ev.ProductId), doc =>
                         {
                             var review = doc.ListOfReviews.First<ReviewDocument>(q => q.Id == ev.Id);
                             review.Status = "Approved";
@@ -57,7 +57,7 @@ namespace Reviews.Service.WebApi.Modules.Reviews.Projections
                         break;
                     case Domain.Events.V1.CaptionAndContentChanged ev:
 
-                        await session.Update<ReviewsByProductDocument>(DocumentId(ev.ProductId), doc =>
+                        session.Update<ReviewsByProductDocument>(DocumentId(ev.ProductId), doc =>
                         {
                             var review = doc.ListOfReviews.First(q => q.Id == ev.Id);
                             review.Content = ev.Content;
@@ -67,7 +67,7 @@ namespace Reviews.Service.WebApi.Modules.Reviews.Projections
                         break;
                 }
 
-                await session.SaveChangesAsync();
+                session.SaveChanges();
             }
         }
 
