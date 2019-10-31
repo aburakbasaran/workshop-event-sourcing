@@ -6,9 +6,9 @@ namespace Reviews.Core.Projections.RavenDb
 {
     public class RavenDbCheckPointStore: ICheckpointStore
     {
-        private readonly Func<IAsyncDocumentSession> getSession;
+        private readonly Func<IDocumentSession> getSession;
         
-        public RavenDbCheckPointStore(Func<IAsyncDocumentSession> session)
+        public RavenDbCheckPointStore(Func<IDocumentSession> session)
         {
             getSession = session;
         }
@@ -17,7 +17,7 @@ namespace Reviews.Core.Projections.RavenDb
         {
             using (var session = getSession())
             {
-                var document = await session.LoadAsync<CheckpointDocument>(GetCheckpointDocumentId(projection));
+                var document = session.Load<CheckpointDocument>(GetCheckpointDocumentId(projection));
 
                 if (document == null) return default;
                 
@@ -32,7 +32,7 @@ namespace Reviews.Core.Projections.RavenDb
             {
                 var docId = GetCheckpointDocumentId(projection);
                 
-                var document = await session.LoadAsync<CheckpointDocument>(docId);
+                var document = session.Load<CheckpointDocument>(docId);
 
                 
                 if (document != null)
@@ -43,13 +43,13 @@ namespace Reviews.Core.Projections.RavenDb
                 else
                 {
                     // add new checkpoint document
-                    await session.StoreAsync(new CheckpointDocument
+                    session.Store(new CheckpointDocument
                     {
                         Checkpoint = checkpoint
                     },docId);
                 }
 
-                await session.SaveChangesAsync();
+                 session.SaveChanges();
             }
         }
         
