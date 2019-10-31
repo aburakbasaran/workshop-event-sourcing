@@ -104,7 +104,7 @@ namespace Reviews.Service.WebApi
             
             var documentStore = RavenDbConfiguration.Build(Configuration["RavenDb:Url"], Configuration["RavenDb:Database"]);
             
-            IAsyncDocumentSession GetSession() => documentStore.OpenAsyncSession();
+            IDocumentSession GetSession() => documentStore.OpenSession();
             
             await ProjectionManager.With
                 .Connection(eventStoreConnection)

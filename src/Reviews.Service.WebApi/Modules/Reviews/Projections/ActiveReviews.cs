@@ -9,9 +9,9 @@ namespace Reviews.Service.WebApi.Modules.Reviews.Projections
 {
     public class ActiveReviews : Projection
     {
-        private readonly Func<IAsyncDocumentSession> getSession;
+        private readonly Func<IDocumentSession> getSession;
 
-        public ActiveReviews(Func<IAsyncDocumentSession> session)=> getSession = session;
+        public ActiveReviews(Func<IDocumentSession> session)=> getSession = session;
         
        
         public override async Task Handle(object e)
@@ -31,7 +31,7 @@ namespace Reviews.Service.WebApi.Modules.Reviews.Projections
                             ReviewBy = view.ReviewBy.ToString(),
                             ProductId = view.ProductId.ToString()
                         };
-                        await session.StoreAsync(document);
+                        session.Store(document);
                         break;
                     
                     //need to review again,if published befores
@@ -41,7 +41,7 @@ namespace Reviews.Service.WebApi.Modules.Reviews.Projections
                         break;
                 }
                 
-                await session.SaveChangesAsync() ;
+                session.SaveChanges() ;
             }
 
         }
