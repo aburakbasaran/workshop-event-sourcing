@@ -15,13 +15,13 @@ namespace Reviews.Core.Projections.RavenDb.Test
     public class RavenCheckpointStoreTests :IDisposable
     {
         
-        private Func<IAsyncDocumentSession> GetDocumentSession { get; }
+        private Func<IDocumentSession> GetDocumentSession { get; }
         private Fixture AutoFixture { get; }
         
         public RavenCheckpointStoreTests()
         {
             AutoFixture = new Fixture();
-            GetDocumentSession = () => LazyStore.Value.OpenAsyncSession();
+            GetDocumentSession = () => LazyStore.Value.OpenSession();
         }
         
         [Fact]

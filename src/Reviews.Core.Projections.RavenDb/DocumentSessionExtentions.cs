@@ -7,9 +7,9 @@ namespace Reviews.Core.Projections.RavenDb
 {
     public static class DocumentSessionExtentions
     {
-        public static async Task Update<T>(this IAsyncDocumentSession session,string id,Action<T> handle,bool isThrowNeeded=false)
+        public static async Task Update<T>(this IDocumentSession session,string id,Action<T> handle,bool isThrowNeeded=false)
         {
-            var doc = await session.LoadAsync<T>(id);
+            var doc = session.Load<T>(id);
             
             if (isThrowNeeded && doc == null)
                 throw new DocumentDoesNotExistException(typeof(T).Name, id);
